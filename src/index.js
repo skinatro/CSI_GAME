@@ -1,17 +1,24 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom"; // Import BrowserRouter and Routes
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+import LoginPage from "./LoginPage"; // Import LoginPage
+import ErrorPage from "./ErrorPage"; // Import ErrorPage (this is for the error page)
+import Win95Terminal from "./Win95Terminal";
+import Windows95Matrix from "./Windows95Matrix";
+import GraphComparisonApp from "./GraphComparisonApp"; // Import GraphComparisonApp
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LoginPage />} /> 
+        <Route path="/error" element={<ErrorPage />} /> 
+        <Route path="/Win" element={<Win95Terminal />} />
+        <Route path="/matrix" element={<Windows95Matrix />} />
+        <Route path="/compare" element={<GraphComparisonApp />} /> {/* route for GraphComparison logic */}
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
