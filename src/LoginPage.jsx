@@ -1,35 +1,40 @@
 import React, { useState, useEffect } from "react";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "./firebase";
-import "./login.css"; // Updated filename to match the new component name
+import { useNavigate } from "react-router-dom"; // Import the useNavigate hook
+import "./login.css";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);  // Track loading state
-  const [isAuthenticated, setIsAuthenticated] = useState(false);  // Track if user is authenticated
+  const [loading, setLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate(); // Hook for navigation
 
   // Check if the user is already logged in when the component mounts
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
-      setIsAuthenticated(!!user);  // Set authentication state based on whether the user is logged in
+      setIsAuthenticated(!!user);
+      if (user) {
+        navigate("/logout"); // If logged in, redirect to the logout page
+      }
     });
-    return unsubscribe; // Cleanup the listener when the component is unmounted
-  }, []);
+    return unsubscribe;
+  }, [navigate]);
 
   const handleLoginClick = async (e) => {
     e.preventDefault();
-    setError("");  // Clear previous errors
-    setLoading(true);  // Start loading state
+    setError("");
+    setLoading(true);
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
       alert("Login successful! 🎉");
-      setEmail("");  // Clear email after successful login
-      setPassword("");  // Clear password after successful login
+      setEmail(""); // Clear email after successful login
+      setPassword(""); // Clear password after successful login
     } catch (err) {
-      console.error("Login failed:", err.message);  // Log error to console for debugging
+      console.error("Login failed:", err.message);
       if (err.code === 'auth/wrong-password') {
         setError("Incorrect password. Please try again.");
       } else if (err.code === 'auth/user-not-found') {
@@ -38,17 +43,7 @@ const LoginPage = () => {
         setError("An unexpected error occurred. Please try again.");
       }
     } finally {
-      setLoading(false);  // Reset loading state
-    }
-  };
-
-  const handleLogoutClick = async () => {
-    try {
-      await signOut(auth);  // Log the user out
-      alert("Logout successful! 👋");
-    } catch (err) {
-      console.error("Logout failed:", err.message);  // Log error to console for debugging
-      setError("An error occurred during logout. Please try again.");
+      setLoading(false);
     }
   };
 
@@ -93,14 +88,7 @@ const LoginPage = () => {
               </form>
               {loading && <div className="win95-loading">Logging in...</div>}
             </>
-          ) : (
-            <div>
-              <p className="win95-text">You are logged in!</p>
-              <div className="win95-buttons">
-                <button type="button" onClick={handleLogoutClick}>Logout</button>
-              </div>
-            </div>
-          )}
+          ) : null}
         </div>
       </div>
     </div>

@@ -1,12 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom"; // Import BrowserRouter and Routes
+import { BrowserRouter, Routes, Route } from "react-router-dom"; 
 
-import LoginPage from "./LoginPage"; // Import LoginPage
-import ErrorPage from "./ErrorPage"; // Import ErrorPage (this is for the error page)
+import LoginPage from "./LoginPage";
+import ErrorPage from "./ErrorPage"; 
 import Win95Terminal from "./Win95Terminal";
 import Windows95Matrix from "./Windows95Matrix";
-import GraphComparisonApp from "./GraphComparisonApp"; // Import GraphComparisonApp
+import LogoutPage from "./LogoutPage";
+import GraphComparisonApp from "./GraphComparisonApp"; 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -17,7 +18,8 @@ root.render(
         <Route path="/error" element={<ErrorPage />} /> 
         <Route path="/Win" element={<Win95Terminal />} />
         <Route path="/matrix" element={<Windows95Matrix />} />
-        <Route path="/compare" element={<GraphComparisonApp />} /> {/* route for GraphComparison logic */}
+        <Route path="/logout" element={<LogoutPage />} />
+        <Route path="/compare" element={<GraphComparisonApp />} /> 
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
