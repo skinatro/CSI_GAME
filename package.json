@@ -8,13 +8,15 @@
     "cors": "^2.8.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "react95": "^4.0.0",
+    "styled-components": "^6.1.15"
   },
   "scripts": {
     "site": "react-scripts start",
     "server": "nodemon Backend/server.js",
-    "python-dev": "nodemon --exec \"python -v\" dummy.py",
-    "python-prod": "nodemon --exec \"python -v\" interface.py",
+    "python-dev": "python Python/dummy.py",
+    "python-prod": "python Python/interface.py",
     "start-dev": "concurrently \"npm run site\" \"npm run server\" \"npm run python-dev\"",
     "start-prod": "concurrently \"npm run site\" \"npm run server\" \"npm run python-prod\""
   },

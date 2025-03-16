@@ -1,0 +1,8 @@
+<svg width="125" height="125" viewBox="0 0 125 125" fill="none" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="61" cy="17" rx="18" ry="17" fill="black"/>
+<ellipse cx="18" cy="62" rx="18" ry="17" fill="black"/>
+<ellipse cx="107" cy="62" rx="18" ry="17" fill="black"/>
+<ellipse cx="62" cy="108" rx="18" ry="17" fill="black"/>
+<line x1="18" y1="60" x2="107" y2="60" stroke="black" stroke-width="6"/>
+<line x1="62.5" y1="107.5" x2="62.5" y2="18.5" stroke="black" stroke-width="6"/>
+</svg>
