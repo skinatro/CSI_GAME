@@ -28,6 +28,6 @@ while running:
     else:
         print("Error sending data:", response.status_code)
 
-    time.sleep(5)
+    time.sleep(1)
 
 print("Exiting...")

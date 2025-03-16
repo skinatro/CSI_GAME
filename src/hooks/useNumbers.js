@@ -24,9 +24,8 @@ const useNumbers = () => {
       }
     };
 
-    // Initial fetch and set up polling every 5 seconds
     fetchNumbers();
-    const intervalId = setInterval(fetchNumbers, 5000);
+    const intervalId = setInterval(fetchNumbers, 2000);
 
     return () => clearInterval(intervalId);
   }, []);

@@ -1,9 +1,9 @@
 import React from 'react';
 import './App.css';
 import Header from './components/Header';
-import NumberList from './components/NumberList';
 import LoadingMessage from './components/LoadingMessage';
 import ErrorMessage from './components/ErrorMessage';
+import NumberDisplay from './components/NumberDisplay';
 import useNumbers from './hooks/useNumbers';
 
 function App() {
@@ -17,7 +17,8 @@ function App() {
         {error && <ErrorMessage message={error} />}
         <div className="numbers-container">
           <h2>Received Numbers</h2>
-          <NumberList numbers={numbers} />
+          {/* The NumberDisplay now handles concatenation and password checking */}
+          <NumberDisplay numbers={numbers} />
         </div>
       </main>
     </div>

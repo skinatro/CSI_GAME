@@ -13,8 +13,8 @@
   "scripts": {
     "site": "react-scripts start",
     "server": "nodemon Backend/server.js",
-    "python-dev": "python Python/dummy.py",
-    "python-prod": "python Python/interface.py",
+    "python-dev": "nodemon --exec \"python -v\" dummy.py",
+    "python-prod": "nodemon --exec \"python -v\" interface.py",
     "start-dev": "concurrently \"npm run site\" \"npm run server\" \"npm run python-dev\"",
     "start-prod": "concurrently \"npm run site\" \"npm run server\" \"npm run python-prod\""
   },
