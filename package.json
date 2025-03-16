@@ -12,7 +12,7 @@
   },
   "scripts": {
     "site": "react-scripts start",
-    "server": "node src/Backened/server.js",
+    "server": "nodemon Backend/server.js",
     "python-dev": "python Python/dummy.py",
     "python-prod": "python Python/interface.py",
     "start-dev": "concurrently \"npm run site\" \"npm run server\" \"npm run python-dev\"",

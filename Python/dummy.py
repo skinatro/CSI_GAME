@@ -5,6 +5,8 @@ import signal
 
 server_url = "http://localhost:3050/data"
 
+time.sleep(5)
+
 running = True  # Flag to control loop execution
 
 def signal_handler(sig, frame):
@@ -26,6 +28,6 @@ while running:
     else:
         print("Error sending data:", response.status_code)
 
-    time.sleep(2)
+    time.sleep(5)
 
 print("Exiting...")
