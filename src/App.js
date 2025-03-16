@@ -9,6 +9,7 @@ import LoadingMessage from './components/LoadingMessage';
 import ErrorMessage from './components/ErrorMessage';
 import NumberDisplay from './components/NumberDisplay';
 import ShufflingGame from './components/ShufflingGame';
+import LoginPassword from './components/LoginPassword';
 import useNumbers from './hooks/useNumbers';
 import './App.css';
 
@@ -22,12 +23,23 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 function App() {
-  // Toggle between "shuffling" and "number" screens
-  const [currentScreen, setCurrentScreen] = useState("shuffling");
-  // Track whether the shuffling game has been solved
-  const [shufflingSolved, setShufflingSolved] = useState(false);
-  // For the Number Display view
+  // Stage can be "shuffling", "number", or "login"
+  const [stage, setStage] = useState("shuffling");
   const { numbers, loading, error } = useNumbers();
+  // Holds the generated 4-digit PIN (initially null)
+  const [generatedPin, setGeneratedPin] = useState(null);
+
+  // When shuffling game is solved, move to "number" stage.
+  const handleShufflingSolved = () => {
+    setStage("number");
+  };
+
+  // When number display is verified, generate a 4-digit PIN and move to "login" stage.
+  const handleNumberDisplaySolved = () => {
+    const pin = Math.floor(1000 + Math.random() * 9000).toString();
+    setGeneratedPin(pin);
+    setStage("login");
+  };
 
   return (
     <ThemeProvider theme={original}>
@@ -36,30 +48,52 @@ function App() {
         <Window style={{ width: 600, margin: '0 auto' }}>
           <WindowHeader noStart>
             <span style={{ fontWeight: 'bold' }}>
-              {currentScreen === "shuffling" ? "Card Shuffling Game" : "Number Display Game"}
+              {stage === "shuffling"
+                ? "Card Shuffling Game"
+                : stage === "number"
+                ? "Number Display Game"
+                : "Login Password"}
             </span>
           </WindowHeader>
           <WindowContent>
-            {/* Navigation buttons */}
+            {/* Navigation Buttons */}
             <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-              <Button onClick={() => setCurrentScreen("shuffling")}>
+              <Button
+                onClick={() => setStage("shuffling")}
+                // Always enabled—this is the starting stage
+              >
                 Shuffling Game
               </Button>
-              <Button disabled={!shufflingSolved} onClick={() => setCurrentScreen("number")}>
+              <Button
+                onClick={() => setStage("number")}
+                disabled={stage === "shuffling"}
+                style={{ opacity: stage === "shuffling" ? 0.5 : 1 }}
+              >
                 Number Display
+              </Button>
+              <Button
+                onClick={() => setStage("login")}
+                disabled={stage !== "login"}
+                style={{ opacity: stage !== "login" ? 0.5 : 1 }}
+              >
+                Login Password
               </Button>
             </div>
 
-            {/* Render view based on currentScreen */}
-            {currentScreen === "shuffling" ? (
-              <ShufflingGame onSolved={() => setShufflingSolved(true)} />
-            ) : (
+            {/* Render the current stage view */}
+            {stage === "shuffling" && (
+              <ShufflingGame onSolved={handleShufflingSolved} />
+            )}
+            {stage === "number" && (
               <>
                 <Header />
                 {loading && numbers.length === 0 && <LoadingMessage />}
                 {error && <ErrorMessage message={error} />}
-                <NumberDisplay numbers={numbers} />
+                <NumberDisplay numbers={numbers} onSolved={handleNumberDisplaySolved} />
               </>
+            )}
+            {stage === "login" && (
+              <LoginPassword pin={generatedPin} />
             )}
           </WindowContent>
         </Window>

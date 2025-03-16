@@ -17,7 +17,7 @@ def signal_handler(sig, frame):
 signal.signal(signal.SIGINT, signal_handler)  # Register interrupt handler
 
 while running:
-    user_input = {"inp": random.randint(0, 8)}  # Randomize user input from 0 to 8
+    user_input = {"inp": random.randint(0, 0)}  # Randomize user input from 0 to 8
 
     # Send POST request
     response = requests.post(server_url, json=user_input)

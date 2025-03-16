@@ -1,9 +1,9 @@
 // src/components/NumberDisplay.js
 import React, { useState } from 'react';
-import { symbolMapping } from './symbols'; // Mapping of digit => symbol (URL or component)
+import { symbolMapping } from './symbols';
 import { Fieldset, Button } from 'react95';
 
-const NumberDisplay = ({ numbers }) => {
+const NumberDisplay = ({ numbers, onSolved }) => {
   // Get the last 9 digits from the input numbers
   const digits = numbers.slice(-9);
 
@@ -36,27 +36,44 @@ const NumberDisplay = ({ numbers }) => {
     }
   };
 
-  // Expected password (as digits)
-  const password = "012345678";
-  // Map expected password to symbols
-  const expectedSymbolDisplay = password.split('').map((digit, index) =>
-    renderSymbol(digit, index)
-  );
-  // Map the input digits to symbols
+  const password = "000000000";
+  const expectedSymbolDisplay = password.split('').map((digit, index) => renderSymbol(digit, index));
   const symbolDisplay = digits.map((digit, index) => renderSymbol(digit, index));
 
-  // State for the verification result message
   const [resultMessage, setResultMessage] = useState("");
 
-  // Function to verify input against the expected password
   const verifyPassword = () => {
     const displayString = digits.join('');
     if (displayString.length !== 9) {
       setResultMessage("Password incomplete.");
     } else if (displayString === password) {
       setResultMessage("Password matched!");
+      if (onSolved) onSolved();
     } else {
       setResultMessage("Password did not match.");
+    }
+  };
+
+  // Determine styling and mark based on resultMessage
+  const getResultDisplay = () => {
+    if (resultMessage === "Password matched!") {
+      return (
+        <div style={{ marginTop: '1rem', textAlign: 'center', color: 'green' }}>
+          <span role="img" aria-label="tick">✔</span> {resultMessage}
+        </div>
+      );
+    } else if (resultMessage === "Password did not match.") {
+      return (
+        <div style={{ marginTop: '1rem', textAlign: 'center', color: 'red' }}>
+          <span role="img" aria-label="cross">❌</span> {resultMessage}
+        </div>
+      );
+    } else {
+      return (
+        <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+          {resultMessage}
+        </div>
+      );
     }
   };
 
@@ -65,33 +82,21 @@ const NumberDisplay = ({ numbers }) => {
       {process.env.REACT_APP_DEBUG === 'true' && (
         <div style={{ marginBottom: '1rem' }}>
           <p>Expected Password:</p>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              margin: '0.5rem 0',
-            }}
-          >
+          <div style={{ display: 'flex', alignItems: 'center', margin: '0.5rem 0' }}>
             {expectedSymbolDisplay}
           </div>
         </div>
       )}
       <div style={{ marginBottom: '1rem' }}>
         <p>Input:</p>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            margin: '0.5rem 0',
-          }}
-        >
+        <div style={{ display: 'flex', alignItems: 'center', margin: '0.5rem 0' }}>
           {symbolDisplay}
         </div>
       </div>
       <div style={{ marginBottom: '1rem' }}>
         <Button onClick={verifyPassword}>Verify</Button>
       </div>
-      <p>{resultMessage}</p>
+      {getResultDisplay()}
     </Fieldset>
   );
 };
