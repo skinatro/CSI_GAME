@@ -1,70 +1,100 @@
-# Getting Started with Create React App
+# Number Display App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React-based application for displaying and managing numbers with drag-and-drop capabilities and a Windows 95-inspired UI.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- Interactive number display with drag-and-drop functionality
+- Windows 95-style user interface using React95
+- Python backend integration
+- RESTful API server
 
-### `npm start`
+## Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Frontend**: React, styled-components, react95
+- **Drag and Drop**: dnd-kit, react-beautiful-dnd
+- **Backend**: Node.js, Express (assumed from package.json)
+- **Additional Processing**: Python
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Prerequisites
 
-### `npm test`
+- Node.js (version 14 or higher recommended)
+- Python (version 3.6 or higher recommended)
+- npm (comes with Node.js)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Installation
 
-### `npm run build`
+1. Clone the repository:
+   ```
+   git clone <repository-url>
+   cd game-one
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. Install the dependencies:
+   ```
+   npm install
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. Make sure you have the necessary Python libraries installed (specific requirements may vary based on the Python scripts).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Running the Application
 
-### `npm run eject`
+### Development Mode
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Run the application in development mode with debugging enabled:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+npm run start-dev
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+This command will concurrently start:
+- React development server
+- Node.js backend server
+- Python development script (dummy.py)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Production Mode
 
-## Learn More
+Run the application in production mode:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+npm run start-prod
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+This will start:
+- React development server
+- Node.js backend server
+- Python production script (interface.py)
 
-### Code Splitting
+## Individual Components
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+If you need to run components separately:
 
-### Analyzing the Bundle Size
+- For just the frontend:
+  ```
+  npm run site
+  ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- For just the backend server:
+  ```
+  npm run server
+  ```
 
-### Making a Progressive Web App
+- For just the Python development script:
+  ```
+  npm run python-dev
+  ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- For just the Python production script:
+  ```
+  npm run python-prod
+  ```
 
-### Advanced Configuration
+## Project Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- `/src` - React application code
+- `/Backend` - Node.js server code
+- `/Python` - Python scripts for additional processing
 
-### Deployment
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+MIT
