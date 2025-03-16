@@ -17,7 +17,7 @@
     "server": "nodemon Backend/server.js",
     "python-dev": "python Python/dummy.py",
     "python-prod": "python Python/interface.py",
-    "start-dev": "concurrently \"npm run site\" \"npm run server\" \"npm run python-dev\"",
+    "start-dev": "REACT_APP_DEBUG=true concurrently \"npm run site\" \"npm run server\" \"npm run python-dev\"",
     "start-prod": "concurrently \"npm run site\" \"npm run server\" \"npm run python-prod\""
   },
   "eslintConfig": {
