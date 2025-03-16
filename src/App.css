@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .App-logo {
@@ -15,13 +18,67 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 40vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  padding: 20px;
+  border-radius: 8px 8px 0 0;
+  margin-bottom: 20px;
+}
+
+.App-header h1 {
+  margin: 0;
+}
+
+.App-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.loading-message {
+  color: #666;
+  font-style: italic;
+}
+
+.error-message {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.numbers-container {
+  margin-top: 20px;
+}
+
+.number-list {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.number-item {
+  background-color: #f0f0f0;
+  padding: 15px 20px;
+  border-radius: 4px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  min-width: 60px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.number-item:hover {
+  transform: scale(1.05);
+  background-color: #e0e0e0;
 }
 
 .App-link {
