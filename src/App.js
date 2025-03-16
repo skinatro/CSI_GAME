@@ -28,9 +28,12 @@ function App() {
   const { numbers, loading, error } = useNumbers();
   // Holds the generated 4-digit PIN (initially null)
   const [generatedPin, setGeneratedPin] = useState(null);
+  // Store the password from ShufflingGame
+  const [shufflingPassword, setShufflingPassword] = useState(null);
 
-  // When shuffling game is solved, move to "number" stage.
-  const handleShufflingSolved = () => {
+  // When shuffling game is solved, move to "number" stage and store the password.
+  const handleShufflingSolved = (password) => {
+    setShufflingPassword(password);
     setStage("number");
   };
 
@@ -66,8 +69,8 @@ function App() {
               </Button>
               <Button
                 onClick={() => setStage("number")}
-                disabled={stage === "shuffling"}
-                style={{ opacity: stage === "shuffling" ? 0.5 : 1 }}
+                disabled={!shufflingPassword}
+                style={{ opacity: !shufflingPassword ? 0.5 : 1 }}
               >
                 Number Display
               </Button>
@@ -89,7 +92,11 @@ function App() {
                 <Header />
                 {loading && numbers.length === 0 && <LoadingMessage />}
                 {error && <ErrorMessage message={error} />}
-                <NumberDisplay numbers={numbers} onSolved={handleNumberDisplaySolved} />
+                <NumberDisplay 
+                  numbers={numbers} 
+                  onSolved={handleNumberDisplaySolved}
+                  password={shufflingPassword} 
+                />
               </>
             )}
             {stage === "login" && (

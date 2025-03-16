@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { symbolMapping } from './symbols';
 import { Fieldset, Button } from 'react95';
 
-const NumberDisplay = ({ numbers, onSolved }) => {
+const NumberDisplay = ({ numbers, onSolved, password }) => {
   // Get the last 9 digits from the input numbers
   const digits = numbers.slice(-9);
 
@@ -36,17 +36,26 @@ const NumberDisplay = ({ numbers, onSolved }) => {
     }
   };
 
-  const password = "000000000";
-  const expectedSymbolDisplay = password.split('').map((digit, index) => renderSymbol(digit, index));
+  // Use the password from ShufflingGame
+  const expectedPassword = password || '';
+  const expectedSymbolDisplay = password ? 
+    expectedPassword.split('').map((digit, index) => renderSymbol(digit, index)) : 
+    <span>No password available yet</span>;
+    
   const symbolDisplay = digits.map((digit, index) => renderSymbol(digit, index));
 
   const [resultMessage, setResultMessage] = useState("");
 
   const verifyPassword = () => {
+    if (!expectedPassword) {
+      setResultMessage("No password to verify against. Complete the shuffling game first.");
+      return;
+    }
+    
     const displayString = digits.join('');
     if (displayString.length !== 9) {
       setResultMessage("Password incomplete.");
-    } else if (displayString === password) {
+    } else if (displayString === expectedPassword) {
       setResultMessage("Password matched!");
       if (onSolved) onSolved();
     } else {
@@ -85,6 +94,7 @@ const NumberDisplay = ({ numbers, onSolved }) => {
           <div style={{ display: 'flex', alignItems: 'center', margin: '0.5rem 0' }}>
             {expectedSymbolDisplay}
           </div>
+          {password ? <p>Current password: {password}</p> : <p>No password set yet</p>}
         </div>
       )}
       <div style={{ marginBottom: '1rem' }}>
@@ -94,7 +104,7 @@ const NumberDisplay = ({ numbers, onSolved }) => {
         </div>
       </div>
       <div style={{ marginBottom: '1rem' }}>
-        <Button onClick={verifyPassword}>Verify</Button>
+        <Button onClick={verifyPassword} disabled={!password}>Verify</Button>
       </div>
       {getResultDisplay()}
     </Fieldset>
