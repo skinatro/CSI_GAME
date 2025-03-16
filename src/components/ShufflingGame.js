@@ -10,14 +10,12 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { Button, Fieldset } from 'react95';
 
-// Define the correct order for the cards
 const correctOrder = [
   { id: 'red', name: 'Red', rgb: 'rgb(255, 0, 0)' },
   { id: 'green', name: 'Green', rgb: 'rgb(0, 255, 0)' },
   { id: 'blue', name: 'Blue', rgb: 'rgb(0, 0, 255)' },
 ];
 
-// Sortable item component
 function SortableItem({ id, name, rgb }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   const style = {
@@ -49,33 +47,39 @@ function SortableItem({ id, name, rgb }) {
   );
 }
 
-const ShufflingGame = () => {
-  // Maintain an array of card IDs for sorting
-  const [items, setItems] = useState(correctOrder.map((card) => card.id));
-  const [result, setResult] = useState(null);
+const ShufflingGame = ({ onSolved }) => {
+  const [cards, setCards] = useState(
+    // Shuffle the correctOrder array initially
+    (() => {
+      const arr = [...correctOrder];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    })()
+  );
+  const [result, setResult] = useState(null); // 'correct' or 'incorrect'
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (!over) return;
     if (active.id !== over.id) {
-      setItems((items) => {
-        const oldIndex = items.indexOf(active.id);
-        const newIndex = items.indexOf(over.id);
-        return arrayMove(items, oldIndex, newIndex);
+      setCards((cards) => {
+        const oldIndex = cards.findIndex((card) => card.id === active.id);
+        const newIndex = cards.findIndex((card) => card.id === over.id);
+        return arrayMove(cards, oldIndex, newIndex);
       });
     }
   };
 
   const verifyOrder = () => {
-    const isCorrect = items.every((id, index) => id === correctOrder[index].id);
+    const isCorrect = cards.every((card, index) => card.id === correctOrder[index].id);
     setResult(isCorrect ? 'correct' : 'incorrect');
+    if (isCorrect && onSolved) {
+      onSolved();
+    }
   };
-
-  // Create a map from id to card data for easy lookup
-  const cardsMap = correctOrder.reduce((acc, card) => {
-    acc[card.id] = card;
-    return acc;
-  }, {});
 
   return (
     <Fieldset legend="Arrange the Cards">
@@ -87,7 +91,7 @@ const ShufflingGame = () => {
         </div>
       )}
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={items} strategy={horizontalListSortingStrategy}>
+        <SortableContext items={cards.map((card) => card.id)} strategy={horizontalListSortingStrategy}>
           <div
             style={{
               display: 'flex',
@@ -98,8 +102,8 @@ const ShufflingGame = () => {
               padding: '10px',
             }}
           >
-            {items.map((id) => (
-              <SortableItem key={id} id={id} {...cardsMap[id]} />
+            {cards.map((card) => (
+              <SortableItem key={card.id} id={card.id} name={card.name} rgb={card.rgb} />
             ))}
           </div>
         </SortableContext>
@@ -109,18 +113,12 @@ const ShufflingGame = () => {
       </div>
       {result === 'correct' && (
         <div style={{ marginTop: '1rem', textAlign: 'center', color: 'green' }}>
-          <span role="img" aria-label="tick">
-            ✔
-          </span>{' '}
-          Correct Order!
+          <span role="img" aria-label="tick">✔</span> Correct Order!
         </div>
       )}
       {result === 'incorrect' && (
         <div style={{ marginTop: '1rem', textAlign: 'center', color: 'red' }}>
-          <span role="img" aria-label="cross">
-            ❌
-          </span>{' '}
-          Incorrect Order!
+          <span role="img" aria-label="cross">❌</span> Incorrect Order!
         </div>
       )}
     </Fieldset>

@@ -22,9 +22,11 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 function App() {
-  // State to determine which view is active: "shuffling" or "number"
+  // Toggle between "shuffling" and "number" screens
   const [currentScreen, setCurrentScreen] = useState("shuffling");
-  // For NumberDisplay view
+  // Track whether the shuffling game has been solved
+  const [shufflingSolved, setShufflingSolved] = useState(false);
+  // For the Number Display view
   const { numbers, loading, error } = useNumbers();
 
   return (
@@ -43,14 +45,14 @@ function App() {
               <Button onClick={() => setCurrentScreen("shuffling")}>
                 Shuffling Game
               </Button>
-              <Button onClick={() => setCurrentScreen("number")}>
+              <Button disabled={!shufflingSolved} onClick={() => setCurrentScreen("number")}>
                 Number Display
               </Button>
             </div>
 
             {/* Render view based on currentScreen */}
             {currentScreen === "shuffling" ? (
-              <ShufflingGame />
+              <ShufflingGame onSolved={() => setShufflingSolved(true)} />
             ) : (
               <>
                 <Header />
