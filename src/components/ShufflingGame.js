@@ -1,71 +1,49 @@
 // src/components/ShufflingGame.js
 import React, { useState, useEffect } from 'react';
-import { DndContext, closestCenter } from '@dnd-kit/core';
-import {
-  SortableContext,
-  horizontalListSortingStrategy,
-  useSortable,
-  arrayMove,
-} from '@dnd-kit/sortable';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Button, Fieldset } from 'react95';
+import { Fieldset, Button } from 'react95';
 
 const colorOptions = [
-  { id: 'red', name: 'Red', rgb: 'rgb(255, 0, 0)' },
-  { id: 'green', name: 'Green', rgb: 'rgb(0, 255, 0)' },
-  { id: 'blue', name: 'Blue', rgb: 'rgb(0, 0, 255)' },
+  { id: 'red', color: '#FF0000' },
+  { id: 'green', color: '#00FF00' },
+  { id: 'blue', color: '#0000FF' }
 ];
 
-function SortableItem({ id, name, rgb }) {
+const SortableItem = ({ id, color }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    userSelect: 'none',
-    margin: '0 8px',
+    backgroundColor: color,
+    width: '100%',
+    height: '60px',
+    margin: '10px 0',
     cursor: 'grab',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
+    fontSize: '1.2em',
+    fontWeight: 'bold',
+    borderRadius: '4px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
   };
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <div
-        style={{
-          width: 100,
-          height: 100,
-          backgroundColor: rgb,
-          borderRadius: 4,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#fff',
-          fontWeight: 'bold',
-        }}
-      >
-        {name}
-      </div>
+      {id.charAt(0).toUpperCase() + id.slice(1)}
     </div>
   );
-}
+};
 
 const ShufflingGame = ({ onSolved }) => {
-  // Generate a random correct order
   const [correctOrder, setCorrectOrder] = useState([]);
-  
-  // Initialize correct order randomly on component mount
-  useEffect(() => {
-    const randomizedCorrectOrder = [...colorOptions];
-    for (let i = randomizedCorrectOrder.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [randomizedCorrectOrder[i], randomizedCorrectOrder[j]] = [randomizedCorrectOrder[j], randomizedCorrectOrder[i]];
-    }
-    setCorrectOrder(randomizedCorrectOrder);
-  }, []);
-
   const [cards, setCards] = useState([]);
-  const [result, setResult] = useState(null); // 'correct' or 'incorrect'
+  const [result, setResult] = useState(null);
   const [currentPassword, setCurrentPassword] = useState(null);
 
-  // Password mapping based on color order
   const passwordMapping = {
     'RGB': '472108365',
     'RBG': '860317452',
@@ -75,7 +53,15 @@ const ShufflingGame = ({ onSolved }) => {
     'BRG': '513247068'
   };
 
-  // Initialize cards with a shuffled version of the correct order once it's ready
+  useEffect(() => {
+    const randomizedCorrectOrder = [...colorOptions];
+    for (let i = randomizedCorrectOrder.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [randomizedCorrectOrder[i], randomizedCorrectOrder[j]] = [randomizedCorrectOrder[j], randomizedCorrectOrder[i]];
+    }
+    setCorrectOrder(randomizedCorrectOrder);
+  }, []);
+
   useEffect(() => {
     if (correctOrder.length === 0) return;
     
@@ -87,10 +73,16 @@ const ShufflingGame = ({ onSolved }) => {
     setCards(shuffledCards);
   }, [correctOrder]);
 
-  // Function to determine the current order code
   const determineOrderCode = (cardArray) => {
     return cardArray.map(card => card.id.charAt(0).toUpperCase()).join('');
   };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
@@ -104,55 +96,42 @@ const ShufflingGame = ({ onSolved }) => {
     }
   };
 
-  const verifyOrder = () => {
-    const isCorrect = cards.every((card, index) => card.id === correctOrder[index].id);
-    setResult(isCorrect ? 'correct' : 'incorrect');
+  const checkOrder = () => {
+    const currentOrderCode = determineOrderCode(cards);
+    const correctOrderCode = determineOrderCode(correctOrder);
     
-    // If correct, determine the password based on the current order
-    if (isCorrect) {
-      const orderCode = determineOrderCode(cards);
-      const password = passwordMapping[orderCode];
+    if (currentOrderCode === correctOrderCode) {
+      setResult('correct');
+      const password = passwordMapping[currentOrderCode];
       setCurrentPassword(password);
-      
-      if (onSolved) {
-        onSolved(password); // Pass the password to the parent component
-      }
+      if (onSolved) onSolved(password);
+    } else {
+      setResult('incorrect');
     }
   };
 
-  // Get the expected correct order code for debugging
-  const correctOrderCode = correctOrder.length ? determineOrderCode(correctOrder) : '';
-
   return (
-    <Fieldset legend="Arrange the Cards">
-      {process.env.REACT_APP_DEBUG === 'true' && (
-        <div style={{ marginBottom: '1rem' }}>
-          <p>
-            Reference Order: <strong>{correctOrderCode}</strong>
-          </p>
-        </div>
-      )}
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={cards.map((card) => card.id)} strategy={horizontalListSortingStrategy}>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              margin: '1rem 0',
-              minHeight: '150px',
-              border: '2px dashed #ccc',
-              padding: '10px',
-            }}
-          >
-            {cards.map((card) => (
-              <SortableItem key={card.id} id={card.id} name={card.name} rgb={card.rgb} />
-            ))}
-          </div>
-        </SortableContext>
-      </DndContext>
-      <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-        <Button onClick={verifyOrder}>Verify</Button>
+    <Fieldset legend="Card Shuffling Game">
+      <div style={{ marginBottom: '1rem' }}>
+        <p>Arrange the cards in the correct order:</p>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext items={cards.map(card => card.id)} strategy={verticalListSortingStrategy}>
+            <div style={{ margin: '1rem 0' }}>
+              {cards.map((card) => (
+                <SortableItem key={card.id} id={card.id} color={card.color} />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
+        <Button onClick={checkOrder}>
+          Check Order
+        </Button>
       </div>
+
       {result === 'correct' && (
         <div style={{ marginTop: '1rem', textAlign: 'center', color: 'green' }}>
           <span role="img" aria-label="tick">✔</span> Correct Order!

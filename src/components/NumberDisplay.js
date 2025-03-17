@@ -4,10 +4,9 @@ import { symbolMapping } from './symbols';
 import { Fieldset, Button } from 'react95';
 
 const NumberDisplay = ({ numbers, onSolved, password }) => {
-  // Get the last 9 digits from the input numbers
   const digits = numbers.slice(-9);
+  const [resultMessage, setResultMessage] = useState("");
 
-  // Mapping function: renders a symbol from a digit
   const renderSymbol = (digit, index) => {
     const symbol = symbolMapping[digit];
     if (typeof symbol === 'string') {
@@ -36,15 +35,12 @@ const NumberDisplay = ({ numbers, onSolved, password }) => {
     }
   };
 
-  // Use the password from ShufflingGame
   const expectedPassword = password || '';
   const expectedSymbolDisplay = password ? 
     expectedPassword.split('').map((digit, index) => renderSymbol(digit, index)) : 
     <span>No password available yet</span>;
     
   const symbolDisplay = digits.map((digit, index) => renderSymbol(digit, index));
-
-  const [resultMessage, setResultMessage] = useState("");
 
   const verifyPassword = () => {
     if (!expectedPassword) {
@@ -63,50 +59,26 @@ const NumberDisplay = ({ numbers, onSolved, password }) => {
     }
   };
 
-  // Determine styling and mark based on resultMessage
-  const getResultDisplay = () => {
-    if (resultMessage === "Password matched!") {
-      return (
-        <div style={{ marginTop: '1rem', textAlign: 'center', color: 'green' }}>
-          <span role="img" aria-label="tick">✔</span> {resultMessage}
-        </div>
-      );
-    } else if (resultMessage === "Password did not match.") {
-      return (
-        <div style={{ marginTop: '1rem', textAlign: 'center', color: 'red' }}>
-          <span role="img" aria-label="cross">❌</span> {resultMessage}
-        </div>
-      );
-    } else {
-      return (
-        <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-          {resultMessage}
-        </div>
-      );
-    }
-  };
-
   return (
-    <Fieldset legend="Number & Password">
-      {process.env.REACT_APP_DEBUG === 'true' && (
-        <div style={{ marginBottom: '1rem' }}>
-          <p>Expected Password:</p>
-          <div style={{ display: 'flex', alignItems: 'center', margin: '0.5rem 0' }}>
-            {expectedSymbolDisplay}
-          </div>
-          {password ? <p>Current password: {password}</p> : <p>No password set yet</p>}
+    <Fieldset legend="Number Display">
+      <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+        <p>Expected Password Display:</p>
+        <div style={{ margin: '1rem 0' }}>
+          {expectedSymbolDisplay}
         </div>
-      )}
-      <div style={{ marginBottom: '1rem' }}>
-        <p>Input:</p>
-        <div style={{ display: 'flex', alignItems: 'center', margin: '0.5rem 0' }}>
+        <p>Current Display:</p>
+        <div style={{ margin: '1rem 0' }}>
           {symbolDisplay}
         </div>
+        <Button onClick={verifyPassword}>
+          Verify Password
+        </Button>
+        {resultMessage && (
+          <div style={{ marginTop: '1rem', color: resultMessage.includes("matched") ? 'green' : 'red' }}>
+            {resultMessage}
+          </div>
+        )}
       </div>
-      <div style={{ marginBottom: '1rem' }}>
-        <Button onClick={verifyPassword} disabled={!password}>Verify</Button>
-      </div>
-      {getResultDisplay()}
     </Fieldset>
   );
 };

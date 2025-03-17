@@ -8,12 +8,9 @@ const LoginPassword = ({ pin }) => {
   const [uploadStatus, setUploadStatus] = useState('');
   const [uploadSuccess, setUploadSuccess] = useState(false);
 
-  // When the component mounts or the pin changes, upload it to Firebase.
   useEffect(() => {
     if (pin) {
       setUploadStatus('Uploading to Firebase...');
-      // Use doc() to specify the document location,
-      // then setDoc() to write the data.
       setDoc(doc(db, "password", "password"), { password: pin })
         .then(() => {
           console.log("PIN uploaded to Firebase:", pin);
