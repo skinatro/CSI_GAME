@@ -32,7 +32,7 @@ const useNumbers = () => {
     };
 
     fetchNumbers();
-    const intervalId = setInterval(fetchNumbers, 5000);
+    const intervalId = setInterval(fetchNumbers, 500);
     return () => clearInterval(intervalId);
   }, [isFirstLoad]);
 
