@@ -17,7 +17,6 @@ const GlobalStyles = createGlobalStyle`
   ${styleReset}
   body {
     font-family: 'MS Sans Serif', Tahoma, Geneva, Verdana, sans-serif;
-    background: teal;
     padding: 20px;
   }
 `;
