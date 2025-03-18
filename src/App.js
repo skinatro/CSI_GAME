@@ -60,7 +60,10 @@ function App() {
           <WindowContent>
             {/* Navigation Buttons */}
             <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-              <Button onClick={() => setStage("shuffling")}>
+              <Button
+                onClick={() => setStage("shuffling")}
+                // Always enabled—this is the starting stage
+              >
                 Shuffling Game
               </Button>
               <Button
