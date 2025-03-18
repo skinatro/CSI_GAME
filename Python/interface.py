@@ -45,7 +45,7 @@ try:
                 else:
                     print(f"Received non-numeric data: '{data}'")
             
-            time.sleep(0.5)  
+            time.sleep(0.1)  
 
         except Exception as e:
             print(f"Runtime error: {e}")

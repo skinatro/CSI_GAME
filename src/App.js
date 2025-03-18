@@ -45,6 +45,13 @@ function App() {
     setStage("login");
   };
 
+  // Debug function to bypass to login stage
+  const handleDebugBypass = () => {
+    const pin = Math.floor(1000 + Math.random() * 9000).toString();
+    setGeneratedPin(pin);
+    setStage("login");
+  };
+
   return (
     <ThemeProvider theme={original}>
       <GlobalStyles />
@@ -99,6 +106,13 @@ function App() {
                   password={shufflingPassword}
                   clearNumbers={clearNumbers}
                 />
+                {process.env.REACT_APP_DEBUG === 'true' && (
+                  <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+                    <Button onClick={handleDebugBypass}>
+                      Debug: Bypass to Login
+                    </Button>
+                  </div>
+                )}
               </>
             )}
             {stage === "login" && (

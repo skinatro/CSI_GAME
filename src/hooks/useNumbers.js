@@ -54,7 +54,7 @@ const useNumbers = () => {
     };
 
     fetchNumbers();
-    const intervalId = setInterval(fetchNumbers, 500);
+    const intervalId = setInterval(fetchNumbers, 100);
     return () => clearInterval(intervalId);
   }, [isFirstLoad, isCleared]);
 

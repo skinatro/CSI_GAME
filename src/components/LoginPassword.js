@@ -1,12 +1,13 @@
 // src/components/LoginPassword.js
 import React, { useState, useEffect } from 'react';
-import { Fieldset, Button, TextField } from 'react95';
+import { Fieldset } from 'react95';
 import { doc, setDoc } from "firebase/firestore";
 import { db } from '../firebase';
 
 const LoginPassword = ({ pin }) => {
   const [uploadStatus, setUploadStatus] = useState('');
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(process.env.REACT_APP_DEBUG === 'true' ? 7 : 30);
 
   // When the component mounts or the pin changes, upload it to Firebase.
   useEffect(() => {
@@ -27,6 +28,18 @@ const LoginPassword = ({ pin }) => {
         });
     }
   }, [pin]);
+
+  // Countdown timer effect
+  useEffect(() => {
+    if (uploadSuccess && timeLeft > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft(prev => prev - 1);
+      }, 1000);
+      return () => clearInterval(timer);
+    } else if (timeLeft === 0) {
+      window.location.reload();
+    }
+  }, [uploadSuccess, timeLeft]);
 
   return (
     <Fieldset legend="Login Password">
@@ -50,17 +63,8 @@ const LoginPassword = ({ pin }) => {
         )}
         
         {uploadSuccess && (
-          <div style={{ marginTop: '1rem' }}>
-            <Button 
-              onClick={() => {
-                console.log("Testing Firebase connection...");
-                setDoc(doc(db, "test", "ping"), { timestamp: new Date().toISOString() })
-                  .then(() => alert("Firebase connection works!"))
-                  .catch(err => alert(`Firebase error: ${err.message}`));
-              }}
-            >
-              Test Firebase Connection
-            </Button>
+          <div style={{ marginTop: '1rem', color: '#666' }}>
+            <p>Page will refresh in {timeLeft} seconds...</p>
           </div>
         )}
       </div>
