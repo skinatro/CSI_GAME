@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { symbolMapping } from './symbols';
 import { Fieldset, Button } from 'react95';
 
-const NumberDisplay = ({ numbers, onSolved, password }) => {
+const NumberDisplay = ({ numbers, onSolved, password, clearNumbers }) => {
   // Get the last 9 digits from the input numbers
   const digits = numbers.slice(-9);
 
@@ -63,6 +63,13 @@ const NumberDisplay = ({ numbers, onSolved, password }) => {
     }
   };
 
+  const handleClear = () => {
+    if (clearNumbers) {
+      clearNumbers();
+      setResultMessage("");
+    }
+  };
+
   // Determine styling and mark based on resultMessage
   const getResultDisplay = () => {
     if (resultMessage === "Password matched!") {
@@ -103,8 +110,9 @@ const NumberDisplay = ({ numbers, onSolved, password }) => {
           {symbolDisplay}
         </div>
       </div>
-      <div style={{ marginBottom: '1rem' }}>
+      <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
         <Button onClick={verifyPassword} disabled={!password}>Verify</Button>
+        <Button onClick={handleClear}>Clear</Button>
       </div>
       {getResultDisplay()}
     </Fieldset>

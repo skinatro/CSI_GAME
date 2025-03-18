@@ -7,9 +7,31 @@ const useNumbers = () => {
   const [loading, setLoading] = useState(false);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [error, setError] = useState(null);
+  const [isCleared, setIsCleared] = useState(false);
+
+  const clearNumbers = async () => {
+    try {
+      // Call the server's clear endpoint
+      await axios.post('http://localhost:3050/clear');
+      setNumbers([]);
+      setIsCleared(true);
+      // Reset the cleared state after 0.1 seconds to allow new numbers to come in
+      setTimeout(() => {
+        setIsCleared(false);
+      }, 100);
+    } catch (err) {
+      console.error('Error clearing numbers:', err);
+      setError('Failed to clear numbers');
+    }
+  };
 
   useEffect(() => {
     const fetchNumbers = async () => {
+      // Don't fetch if numbers were just cleared
+      if (isCleared) {
+        return;
+      }
+
       // Only set loading true during the first load
       if (isFirstLoad) {
         setLoading(true);
@@ -34,9 +56,9 @@ const useNumbers = () => {
     fetchNumbers();
     const intervalId = setInterval(fetchNumbers, 500);
     return () => clearInterval(intervalId);
-  }, [isFirstLoad]);
+  }, [isFirstLoad, isCleared]);
 
-  return { numbers, loading, error };
+  return { numbers, loading, error, clearNumbers };
 };
 
 export default useNumbers;

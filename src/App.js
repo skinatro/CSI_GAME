@@ -24,7 +24,7 @@ const GlobalStyles = createGlobalStyle`
 function App() {
   // Stage can be "shuffling", "number", or "login"
   const [stage, setStage] = useState("shuffling");
-  const { numbers, loading, error } = useNumbers();
+  const { numbers, loading, error, clearNumbers } = useNumbers();
   // Holds the generated 4-digit PIN (initially null)
   const [generatedPin, setGeneratedPin] = useState(null);
   // Store the password from ShufflingGame
@@ -34,6 +34,8 @@ function App() {
   const handleShufflingSolved = (password) => {
     setShufflingPassword(password);
     setStage("number");
+    // Clear numbers when new password is generated
+    clearNumbers();
   };
 
   // When number display is verified, generate a 4-digit PIN and move to "login" stage.
@@ -94,7 +96,8 @@ function App() {
                 <NumberDisplay 
                   numbers={numbers} 
                   onSolved={handleNumberDisplaySolved}
-                  password={shufflingPassword} 
+                  password={shufflingPassword}
+                  clearNumbers={clearNumbers}
                 />
               </>
             )}

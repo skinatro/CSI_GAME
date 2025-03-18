@@ -45,6 +45,18 @@ app.get('/numbers', (req, res) => {
   res.json(numbers);
 });
 
+// POST endpoint to clear numbers
+app.post('/clear', (req, res) => {
+  numbers = [];
+  // Broadcast clear event to WebSocket clients
+  clients.forEach(client => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify({ type: 'clear' }));
+    }
+  });
+  res.send('Numbers cleared.');
+});
+
 // Create a WebSocket server on a separate port
 const wss = new WebSocket.Server({ port: wsPort });
 
